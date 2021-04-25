@@ -1,0 +1,83 @@
+''' Напишите программу, позволяющую создавать резервные копии содержимого каталогов, а также очищать содержимое каталогов '''
+from os import *
+from tkinter import *
+from shutil import *
+def locselect(i=0):
+    '''создание нового каталога на верхнем уросне'''
+    try:
+        mkdir(getcwd()[:getcwd().find('\\') + 1] + 'reserve' + str(i))
+        return getcwd()[:getcwd().find('\\') + 1] + 'reserve' + str(i)
+    except:
+        locselect(i+1)
+
+def reserved(t, loc=locselect()):
+    '''копирование файлов в новый каталог'''
+    f = listdir(t)
+    d = getcwd() + '\\'
+    floc = listdir(loc)
+    if f == floc:
+        window1 = Tk()
+        window1.title('Результат процедуры')
+        lbl1 = Label(window1, text='все элементы успесшно сохранены', font=('Times New Roman', 10), fg='green')
+        lbl1.grid(column=0, row=0)
+        return loc
+    try:
+        copy2(d + f[0], loc + f[0] + 'reservcopy')
+    except:
+        reserved(f[0])
+    reserved(t)
+
+def delete(t):
+    '''очистка каталога'''
+    f = listdir(t)
+    if f == []:
+        window1 = Tk()
+        window1.title('Результат процедуры')
+        lbl1 = Label(window1, text='уровень очищен', font=('Times New Roman', 10), fg='green')
+        lbl1.grid(column=0, row=0)
+        return True
+    d = getcwd() + '\\'
+    try:
+        remove(d + f[0])
+    except:
+        delete(f[0])
+    delete(t)
+
+def clikedD():
+
+    try:
+        t = txt.get()
+        chdir(t)
+        delete(t)
+    except:
+        window1 = Tk()
+        window1.title('Результат процедуры')
+        lbl1 = Label(window1, text='неверный адрес каталога, повторите попытку', font=('Times New Roman', 10), fg='green')
+        lbl1.grid(column=0, row=0)
+
+def clikedR():
+    try:
+        t = txt.get()
+        chdir(t)
+        reserved(t)
+    except:
+        window2 = Tk()
+        window2.title('Результат копирования')
+        lbl1 = Label(window2, text='неверный адрес каталога, повторите попытку', font=('Times New Roman', 10), fg='green')
+        lbl1.grid(column=0, row=0)
+
+window = Tk()
+window.title('Действия над файлами')
+lbl = Label(window, text='введите адрес каталога: ', font=('Times New Roman', 10))
+lbl.grid(column=0, row=0)
+window.geometry('600x400')
+btn = Button(window, text='удалить вложения', bg='red', fg='white', command=clikedD)
+btn.grid(column=1, row=2)
+btn = Button(window, text='создать резервную копию', bg='blue', fg='white', command=clikedR)
+btn.grid(column=2, row=2)
+txt = Entry(window, width=50)
+txt.grid(column=1, row=0)
+txt.focus()
+
+window.mainloop()
+
