@@ -24,8 +24,8 @@ def reserved(t, loc=locselect()):
     try:
         copy2(d + f[0], loc + f[0] + 'reservcopy')
     except:
-        reserved(f[0])
-    reserved(t)
+        reserved(f[0], loc)
+    reserved(t, loc)
 
 def delete(t):
     '''очистка каталога'''
